@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  mariadb:
+    container_name: mariadb
+    platform: linux/x86_64/v8
+    image: mariadb
+    volumes:
+     - ./docker/mariadb:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=prestashop
+    networks:
+      - prestashop
+
+  prestashop:
+    container_name: prestashop
+    platform: linux/x86_64/v8
+    image: prestashop/prestashop:1.7.8 
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    ports:
+      - 8080:80
+    environment:
+      - PS_DEV_MODE=1
+      - DB_SERVER=mariadb
+      - DB_USER=root
+      - DB_PASSWD=root
+      - DB_NAME=prestashop
+      - PS_INSTALL_AUTO=1
+      - PS_DOMAIN=localhost:8080
+    networks:
+      - prestashop
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    platform: linux/x86_64/v8
+    image: phpmyadmin/phpmyadmin
+    links:
+      - mariadb
+    ports: 
+      - 3306:3306 
+    environment:
+      - PMA_HOST=mariadb
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+networks:
+    prestashop:
+
