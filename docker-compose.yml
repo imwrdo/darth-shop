@@ -8,6 +8,7 @@ services:
     volumes:
      - ./docker/mariadb:/docker-entrypoint-initdb.d
     environment:
+      - PS_FOLDER_ADMIN=admin087pqsbei
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=prestashop
     networks:
@@ -22,6 +23,8 @@ services:
       - mariadb
     ports:
       - 8080:80
+    volumes:
+      - ./prestashop:/var/www/html
     environment:
       - PS_DEV_MODE=1
       - DB_SERVER=mariadb
@@ -30,6 +33,7 @@ services:
       - DB_NAME=prestashop
       - PS_INSTALL_AUTO=1
       - PS_DOMAIN=localhost:8080
+      - PS_FOLDER_ADMIN=admin087pqsbei
     networks:
       - prestashop
 
