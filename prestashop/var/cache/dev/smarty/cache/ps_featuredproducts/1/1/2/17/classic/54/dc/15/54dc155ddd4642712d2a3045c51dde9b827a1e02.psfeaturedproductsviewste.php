@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.48, created on 2024-11-04 17:21:55
+/* Smarty version 3.1.48, created on 2024-11-12 16:42:26
   from 'module:psfeaturedproductsviewste' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.48',
-  'unifunc' => 'content_6728f4a3aac840_88014312',
+  'unifunc' => 'content_673377621a76a3_56679000',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
@@ -42,7 +42,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 31536000,
 ),true)) {
-function content_6728f4a3aac840_88014312 (Smarty_Internal_Template $_smarty_tpl) {
+function content_673377621a76a3_56679000 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!-- begin /var/www/html/themes/classic/modules/ps_featuredproducts/views/templates/hook/ps_featuredproducts.tpl --><section class="featured-products clearfix">
   <h2 class="h2 products-section-title text-uppercase">
     Popular Products
@@ -77,7 +77,7 @@ function content_6728f4a3aac840_88014312 (Smarty_Internal_Template $_smarty_tpl)
 
           
                           <div class="variant-links">
-      <a href="http://localhost:8080/gb/men/1-1-hummingbird-printed-t-shirt.html#/1-size-s/8-colour-white"
+      <a href="http://localhost:8080/gb/men/1-3-hummingbird-printed-t-shirt.html#/2-size-m/8-colour-white"
        class="color"
        title="White"
        aria-label="White"
