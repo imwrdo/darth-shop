@@ -29,3 +29,13 @@ c0f06d,172.18.0.1,GET,http://localhost:8080/admin087pqsbei/index.php/sell/catalo
 1799b1,172.18.0.1,GET,http://localhost:8080/admin087pqsbei/index.php/sell/catalog/products/attributes/get-all?_token=HOqeFfsBJWLnDEytRvUgVFFPJvndWs604itplwoyId8,1730739125,,200
 24c68f,172.18.0.1,GET,http://localhost:8080/admin087pqsbei/index.php/sell/catalog/products/image/upload/20?_token=HOqeFfsBJWLnDEytRvUgVFFPJvndWs604itplwoyId8,1730739143,,200
 794212,172.18.0.1,POST,http://localhost:8080/admin087pqsbei/index.php/sell/catalog/products/image/upload/20?_token=HOqeFfsBJWLnDEytRvUgVFFPJvndWs604itplwoyId8,1730739143,,500
+81cd03,172.18.0.1,GET,http://localhost:8080/admin087pqsbei/index.php/modules/metrics/api/getShopData?_token=hw-JKiNt3iR4ZozLzXV6eX0wuGlk0uAROCAgP-a3WXA,1731093367,,200
+6c9043,172.18.0.1,POST,http://localhost:8080/admin087pqsbei/index.php/common/notifications?_token=hw-JKiNt3iR4ZozLzXV6eX0wuGlk0uAROCAgP-a3WXA&rand=1731093366576,1731093367,,200
+4e02eb,172.18.0.1,POST,http://localhost:8080/admin087pqsbei/index.php/common/notifications?_token=hw-JKiNt3iR4ZozLzXV6eX0wuGlk0uAROCAgP-a3WXA&rand=1731093366620,1731093368,,200
+c10a1b,172.18.0.1,GET,http://localhost:8080/admin087pqsbei/index.php/_fragment?_path=_format%3Dhtml%26_locale%3Den-US%26_controller%3DPrestaShopBundle%255CController%255CAdmin%255CProductController%253A%253AlistAction,1731093393,3afe92,200
+3afe92,172.18.0.1,GET,http://localhost:8080/admin087pqsbei/index.php/sell/catalog/products?_token=hw-JKiNt3iR4ZozLzXV6eX0wuGlk0uAROCAgP-a3WXA,1731093393,,200
+c3d6a7,172.18.0.1,POST,http://localhost:8080/admin087pqsbei/index.php/common/notifications?_token=hw-JKiNt3iR4ZozLzXV6eX0wuGlk0uAROCAgP-a3WXA&rand=1731093394615,1731093394,,200
+b5293f,172.18.0.1,POST,http://localhost:8080/admin087pqsbei/index.php/common/notifications?_token=hw-JKiNt3iR4ZozLzXV6eX0wuGlk0uAROCAgP-a3WXA,1731093395,,200
+4f9195,172.18.0.1,GET,http://localhost:8080/admin087pqsbei/index.php/modules/metrics/api/getShopData?_token=hw-JKiNt3iR4ZozLzXV6eX0wuGlk0uAROCAgP-a3WXA,1731093403,,200
+cc4aa8,172.18.0.1,POST,http://localhost:8080/admin087pqsbei/index.php/common/notifications?_token=hw-JKiNt3iR4ZozLzXV6eX0wuGlk0uAROCAgP-a3WXA&rand=1731093403610,1731093404,,200
+9e5835,172.18.0.1,POST,http://localhost:8080/admin087pqsbei/index.php/common/notifications?_token=hw-JKiNt3iR4ZozLzXV6eX0wuGlk0uAROCAgP-a3WXA&rand=1731093403636,1731093404,,200
