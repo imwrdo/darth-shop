@@ -18,4 +18,4 @@ fi
 
 source .env
 
-docker-compose exec mariadb mariadb-dump -u root -p"$DB_PASSWD" --databases "$DB_NAME" > "$1"
+docker compose exec mariadb mariadb-dump -u root -p"$DB_PASSWD" --databases "$DB_NAME" > "$1"
