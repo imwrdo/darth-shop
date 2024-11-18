@@ -805,7 +805,7 @@
   ),
   'CMSCategory' => 
   array (
-    'path' => '',
+    'path' => 'override/classes/CMSCategory.php',
     'type' => 'class',
     'override' => false,
   ),
@@ -991,7 +991,7 @@
   ),
   'Category' => 
   array (
-    'path' => '',
+    'path' => 'override/classes/Category.php',
     'type' => 'class',
     'override' => false,
   ),
@@ -2353,7 +2353,7 @@
   ),
   'Manufacturer' => 
   array (
-    'path' => '',
+    'path' => 'override/classes/Manufacturer.php',
     'type' => 'class',
     'override' => false,
   ),
@@ -3751,7 +3751,7 @@
   ),
   'Supplier' => 
   array (
-    'path' => '',
+    'path' => 'override/classes/Supplier.php',
     'type' => 'class',
     'override' => false,
   ),
