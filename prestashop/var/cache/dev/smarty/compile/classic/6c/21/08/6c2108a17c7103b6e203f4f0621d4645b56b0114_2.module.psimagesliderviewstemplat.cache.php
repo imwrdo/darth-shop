@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.48, created on 2024-11-18 14:40:50
+/* Smarty version 3.1.48, created on 2024-11-22 21:16:10
   from 'module:psimagesliderviewstemplat' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.48',
-  'unifunc' => 'content_673b43e2be15b0_06849249',
+  'unifunc' => 'content_6740e68a3ac191_65007754',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
@@ -20,8 +20,8 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_673b43e2be15b0_06849249 (Smarty_Internal_Template $_smarty_tpl) {
-$_smarty_tpl->compiled->nocache_hash = '1838836176673b43e2b97fd1_41608710';
+function content_6740e68a3ac191_65007754 (Smarty_Internal_Template $_smarty_tpl) {
+$_smarty_tpl->compiled->nocache_hash = '9366427096740e68a390763_51069440';
 ?>
 <!-- begin /var/www/html/themes/classic/modules/ps_imageslider/views/templates/hook/slider.tpl -->
 <?php if ($_smarty_tpl->tpl_vars['homeslider']->value['slides']) {?>
