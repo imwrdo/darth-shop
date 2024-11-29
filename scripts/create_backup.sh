@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # Check if an argument was supplied
 if [ $# -eq 0 ]; then
@@ -16,6 +17,6 @@ if [ -f "$1" ]; then
     fi
 fi
 
-source .env
+source "./.env"
 
 docker compose exec mariadb mariadb-dump -u root -p"$DB_PASSWD" --databases "$DB_NAME" > "$1"
