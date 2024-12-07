@@ -50,7 +50,7 @@ def save_image(image_url, product_name, retries=3):
             time.sleep(random.uniform(1, 3))
     return None
 
-def get_js_loaded_image(product_url):
+def get_js_loaded_images(product_url):
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     browser = webdriver.Chrome(options=options)
@@ -67,6 +67,7 @@ def get_js_loaded_image(product_url):
             img_url = img.get_attribute("src")
             if img_url and not img_url.startswith("data:image/svg+xml"):
                 image_urls.append(img_url)
+            if len(image_urls) >= 2:
                 break
     except Exception as e:
         print(f"Error loading images: {e}")
@@ -74,6 +75,7 @@ def get_js_loaded_image(product_url):
         browser.quit()
 
     return image_urls
+
 
 def scrapPositions(url, depth=0, curr_category=None, category_path=None, all_data=None, processed_urls=None):
     headers = {
@@ -112,25 +114,40 @@ def scrapPositions(url, depth=0, curr_category=None, category_path=None, all_dat
         products = soup.find_all('div', attrs={'class': 'products-view-item text-static cs-br-1 js-products-view-item'})
         products_prices = soup.find_all('div', attrs={'class': 'price-number'})
         product_names = soup.find_all('a', attrs={'class': 'products-view-name-link'})
+        product_descriptions = soup.find_all('div', attrs={'class': 'tab-content'})
 
         for i in range(len(products)):
             product_url = product_names[i].get('href')
-            #if not product_url or product_url in processed_urls:
-             #   continue
-
             processed_urls.add(product_url)
             product_name = product_names[i].text.strip() if i < len(product_names) else "N/A"
             product_price = products_prices[i].text.strip() if i < len(products_prices) else "N/A"
+            product_description = product_descriptions[i].text.strip() if i < len(product_descriptions) else "N/A"
 
-            # Check if the product has been processed for an image
+            # Extract the six attributes from subsequent spans
+            spans = products[i].find_all('span', class_='inplace-offset')
+            attributes = {
+                "universe": spans[0].text.strip() if len(spans) > 0 else "N/A",
+                "hero_or_theme": spans[1].text.strip() if len(spans) > 1 else "N/A",
+                "delivery_city": spans[2].text.strip() if len(spans) > 2 else "N/A",
+                "size": spans[3].text.strip() if len(spans) > 3 else "N/A",
+                "self_pick_up": spans[4].text.strip() if len(spans) > 4 else "N/A",
+                "color": spans[5].text.strip() if len(spans) > 5 else "N/A",
+            }
+
+            # Check if the product has been processed for images
             if product_url in image_paths:
-                image_file_path = image_paths[product_url]
-                print(f"Reusing image for {product_name} from {image_file_path}")
+                first_image_file_path, second_image_file_path = image_paths[product_url]
+                print(f"Reusing images for {product_name}")
             else:
-                product_image_urls = get_js_loaded_image(product_url)
-                product_image_url = product_image_urls[0] if product_image_urls else None
-                image_file_path = save_image(product_image_url, product_name) if product_image_url else None
-                image_paths[product_url] = image_file_path  # Store the path for future use
+                product_image_urls = get_js_loaded_images(product_url)
+                if len(product_image_urls) >= 1:
+                    first_image_file_path = save_image(product_image_urls[0], product_name)
+                    second_image_file_path = save_image(product_image_urls[1], product_name) if len(product_image_urls) > 1 else None
+                else:
+                    first_image_file_path = second_image_file_path = None
+
+                # Store the paths for future use
+                image_paths[product_url] = (first_image_file_path, second_image_file_path)
 
             translated_product_name = translate_text(product_name)
             try:
@@ -143,10 +160,13 @@ def scrapPositions(url, depth=0, curr_category=None, category_path=None, all_dat
                 "name": translated_product_name,
                 "price": formatted_price,
                 "previous_price": "N/A",
-                "first_image": image_file_path,
+                "first_image": first_image_file_path,
+                "second_image": second_image_file_path,
                 "details": {
                     "is_available": "Available",
-                    "delivery_info": []
+                    "delivery_info": [],
+                    "description": product_description,
+                    **attributes
                 }
             }
 
@@ -170,6 +190,8 @@ def scrapPositions(url, depth=0, curr_category=None, category_path=None, all_dat
         browser.quit()
 
     return all_data
+
+
 
 def save_all_data_as_json(all_data):
     os.makedirs("scraped_products", exist_ok=True)
