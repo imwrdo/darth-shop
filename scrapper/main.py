@@ -1,3 +1,7 @@
+import sys
+import io
+sys.stdout.reconfigure(encoding='utf-8')
+sys.stderr.reconfigure(encoding='utf-8')
 import random
 import requests
 from bs4 import BeautifulSoup
@@ -10,9 +14,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-def translate_text(text):
+
+def translate_text(text, cache={}):
+    if text in cache:
+        return cache[text]
+    
     try:
-        return GoogleTranslator(source='ru', target='en').translate(text)
+        translated = GoogleTranslator(source='ru', target='en').translate(text)
+        cache[text] = translated
+        return translated
     except Exception as e:
         print(f"Translation error: {e}")
         return text
@@ -20,17 +30,17 @@ def translate_text(text):
 def sanitize_filename(name):
     return name.replace(" ", "_").replace("'", "").replace('"', "").replace("/", "_").replace('.', '_').replace('*', 'x')
 
-# Dictionary to store image paths for each product URL
 image_paths = {}
 
 def save_image(image_url, product_name, retries=3):
     if not image_url:
+        print(f"No valid URL to save for product {product_name}.")
         return None
 
     os.makedirs("images", exist_ok=True)
     unique_id = str(random.randint(1000, 9999))
     filename = f"{sanitize_filename(translate_text(product_name + '_' + unique_id))}.jpg"
-    file_path = os.path.join("images", filename)
+    file_path = os.path.join("images_1", filename)
 
     headers = {
         "User-Agent": "Mozilla/5.0"
@@ -48,6 +58,7 @@ def save_image(image_url, product_name, retries=3):
         except requests.RequestException as e:
             print(f"Failed to download image: {e} (Attempt {attempt + 1}/{retries})")
             time.sleep(random.uniform(1, 3))
+
     return None
 
 def get_js_loaded_images(product_url):
@@ -58,34 +69,135 @@ def get_js_loaded_images(product_url):
     image_urls = []
     try:
         browser.get(product_url)
+
         WebDriverWait(browser, 60).until(
-            EC.presence_of_all_elements_located(
-                (By.XPATH, "//img[@class='gallery-picture-obj' and contains(@data-ng-style, 'max-height')]"))
+            EC.presence_of_all_elements_located((By.XPATH, "//img[@class='gallery-picture-obj']"))
         )
-        images = browser.find_elements(By.XPATH, "//img[@class='gallery-picture-obj' and contains(@data-ng-style, 'max-height')]")
-        for img in images:
-            img_url = img.get_attribute("src")
-            if img_url and not img_url.startswith("data:image/svg+xml"):
-                image_urls.append(img_url)
-            if len(image_urls) >= 2:
-                break
+
+        images = browser.find_elements(By.XPATH, "//img[@class='gallery-picture-obj']")
+        if images:
+            image_urls.append(images[1].get_attribute("src"))  # First image (unchanged)
+
+        try:
+            second_image_div = browser.find_elements(By.XPATH, "//div[contains(@class, 'details-carousel-item') and @data-parameters]")
+            data_parameters = second_image_div[1].get_attribute("data-parameters")
+            if data_parameters:
+                data = json.loads(data_parameters.replace("'", "\""))  # Handle single quotes in JSON
+                second_image_url = data.get('originalPath')
+
+                if second_image_url:
+                    image_urls.append(second_image_url)
+                else:
+                    image_urls.append(images[1].get_attribute("src"))
+        except Exception as e:
+            image_urls.append(images[1].get_attribute("src"))
+            print(f"Failed to get second image from second div: {e}")
+
     except Exception as e:
-        print(f"Error loading images: {e}")
+        print(f"Error loading images for {product_url}: {e}")
     finally:
         browser.quit()
 
+    print(f"Selected images for product: {image_urls}")
     return image_urls
 
+def get_description(product_url):
+    print("Trying to get description...")
+    
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    driver = webdriver.Chrome(options=options)
+    
+    try:
+        print(f"Opening URL: {product_url}")
+        driver.get(product_url)
+        
+        description_div = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, 'div.tab-content.details-tabs-deacription.tab-content-active[itemprop="description"]')
+            )
+        )
+        try:
+            paragraph = description_div.find_element(By.TAG_NAME, 'p')
+        except Exception as e:
+            try:
+                paragraph = description_div.find_element(By.TAG_NAME, 'span')
+            except Exception as ex:
+                paragraph = description_div
+        
+        if paragraph:
+            description = paragraph.text.strip().replace('/n', ' ')
+        else:
+            description = "N/A"
+        description = description.encode('utf-8', 'ignore').decode('utf-8')
+        print(f"Description: {translate_text(description)}")
+    
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    
+    finally:
+        driver.quit()
+    
+    return translate_text(description)
 
-def scrapPositions(url, depth=0, curr_category=None, category_path=None, all_data=None, processed_urls=None):
+def get_product_data(product_url):
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
+
+    response = requests.get(product_url, headers=headers)
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    attributes = {}
+    properties_list = soup.find_all('ul', class_='properties')
+    if properties_list:
+        span_values = []
+        attributes_values =[]
+        for li in properties_list[0].find_all('li', class_='properties-item'):
+            span = li.find('div', class_='properties-item-value').find('span', class_='inplace-offset')
+            attribute = li.find('div', class_='properties-item-name')
+            if span:
+                span_values.append(translate_text(span.text.strip()))
+            else:
+                span_values.append("N/A")
+            if attribute:
+                attributes_values.append(translate_text(attribute.text.strip()))
+
+
+        for i, attribute_name in enumerate(attributes_values):
+            if i < len(span_values):
+                attributes[attribute_name] = span_values[i]
+            else:
+                attributes[attribute_name] = "N/A"
+    available = soup.find('div', attrs={'class': 'details-avalable-text'})  # Use find() since we expect a single element
+    available_attr = "N/A"
+    if available:
+        available_text = available.text.strip() + " psc."
+        if available_text:  
+            available_attr = available_text
+    try:
+        description = get_description(product_url)
+    except Exception as e:
+        description = 'N/A'
+    product_data = {
+        "attributes": attributes,
+        "Available": available_attr,
+        "Description" : description
+    }
+
+    return product_data
+
+def scrapPositions(url, depth=0, curr_category=None, category_path=None, all_data=None, processed_urls=None):
+    print(f"Scraping URL: {url} (Depth: {depth})")
+    
     if all_data is None:
         all_data = []
     if processed_urls is None:
         processed_urls = set()
 
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     browser = webdriver.Chrome(options=options)
@@ -100,7 +212,6 @@ def scrapPositions(url, depth=0, curr_category=None, category_path=None, all_dat
             if new_height == last_height:
                 break
             last_height = new_height
-
         soup = BeautifulSoup(browser.page_source, "html.parser")
 
         if category_path is None:
@@ -111,30 +222,17 @@ def scrapPositions(url, depth=0, curr_category=None, category_path=None, all_dat
         translated_category = translate_text(curr_category) if curr_category else "Uncategorized"
         category_data = {"category": translated_category, "products": []}
 
-        products = soup.find_all('div', attrs={'class': 'products-view-item text-static cs-br-1 js-products-view-item'})
-        products_prices = soup.find_all('div', attrs={'class': 'price-number'})
+        products = soup.find_all('div', attrs={'class': 'products-view-item'})
         product_names = soup.find_all('a', attrs={'class': 'products-view-name-link'})
-        product_descriptions = soup.find_all('div', attrs={'class': 'tab-content'})
+        products_prices = soup.find_all('div', attrs={'class': 'price-number'})
+      
 
         for i in range(len(products)):
             product_url = product_names[i].get('href')
-            processed_urls.add(product_url)
-            product_name = product_names[i].text.strip() if i < len(product_names) else "N/A"
+
+            product_name = product_names[i].text.strip()
             product_price = products_prices[i].text.strip() if i < len(products_prices) else "N/A"
-            product_description = product_descriptions[i].text.strip() if i < len(product_descriptions) else "N/A"
-
-            # Extract the six attributes from subsequent spans
-            spans = products[i].find_all('span', class_='inplace-offset')
-            attributes = {
-                "universe": spans[0].text.strip() if len(spans) > 0 else "N/A",
-                "hero_or_theme": spans[1].text.strip() if len(spans) > 1 else "N/A",
-                "delivery_city": spans[2].text.strip() if len(spans) > 2 else "N/A",
-                "size": spans[3].text.strip() if len(spans) > 3 else "N/A",
-                "self_pick_up": spans[4].text.strip() if len(spans) > 4 else "N/A",
-                "color": spans[5].text.strip() if len(spans) > 5 else "N/A",
-            }
-
-            # Check if the product has been processed for images
+            
             if product_url in image_paths:
                 first_image_file_path, second_image_file_path = image_paths[product_url]
                 print(f"Reusing images for {product_name}")
@@ -145,34 +243,28 @@ def scrapPositions(url, depth=0, curr_category=None, category_path=None, all_dat
                     second_image_file_path = save_image(product_image_urls[1], product_name) if len(product_image_urls) > 1 else None
                 else:
                     first_image_file_path = second_image_file_path = None
-
-                # Store the paths for future use
                 image_paths[product_url] = (first_image_file_path, second_image_file_path)
-
-            translated_product_name = translate_text(product_name)
             try:
                 product_price_float = float(product_price.replace(",", "").replace(" ", "")) / 100
                 formatted_price = f"${product_price_float:.2f}"
             except ValueError:
                 formatted_price = product_price
-
-            product = {
-                "name": translated_product_name,
+            
+            product_details = get_product_data(product_url)
+            product_data = {
+                "name": translate_text(product_name),
                 "price": formatted_price,
                 "previous_price": "N/A",
                 "first_image": first_image_file_path,
-                "second_image": second_image_file_path,
+                "second_image" : second_image_file_path,
                 "details": {
-                    "is_available": "Available",
-                    "delivery_info": [],
-                    "description": product_description,
-                    **attributes
+                    **product_details
                 }
             }
-
-            category_data["products"].append(product)
-
+            category_data["products"].append(product_data)
+            print(f"Saved product as: {product_data}")
         all_data.append(category_data)
+        
 
         categories_names = soup.find_all('a', attrs={'class': 'product-categories-header-slim-title'})
         for category in categories_names:
@@ -183,9 +275,7 @@ def scrapPositions(url, depth=0, curr_category=None, category_path=None, all_dat
                                all_data=all_data, processed_urls=processed_urls)
 
     except Exception as e:
-        print(f"An error occurred: {e}")
-        time.sleep(3)
-
+        print(f"Error while scraping {url}: {e}")
     finally:
         browser.quit()
 
@@ -193,13 +283,13 @@ def scrapPositions(url, depth=0, curr_category=None, category_path=None, all_dat
 
 
 
+
 def save_all_data_as_json(all_data):
-    os.makedirs("scraped_products", exist_ok=True)
-    file_path = os.path.join("scraped_products", "products_data.json")
+    os.makedirs("scraped_products_1", exist_ok=True)
+    file_path = os.path.join("scraped_products_1", "products_data.json")
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(all_data, f, ensure_ascii=False, indent=4)
     print(f"All data saved as {file_path}")
 
-# Start the scraping process
 all_data = scrapPositions("https://darth-shop.ru/categories/star-wars")
 save_all_data_as_json(all_data)
