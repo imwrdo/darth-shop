@@ -225,8 +225,8 @@ def process_products(json_file):
 
         # Get the first product image for the category
         for product in category_entry.get("products", []):
-            if os.path.isfile(product.get("first_image", "")):
-                first_product_image = product.get("first_image", "")
+            if os.path.isfile("../scrapper/" + product.get("first_image", "")):
+                first_product_image = "../scrapper/" + product.get("first_image", "")
                 break
 
         # Handle category hierarchy
@@ -251,6 +251,8 @@ def process_products(json_file):
             weight = round(random.uniform(0.05, 0.2), 2)
             image_path = "../scrapper/" + product.get("first_image", "")
             second_image_path = "../scrapper/" + product.get("second_image", "")
+            
+            # print(image_path)
 
             # Generate product_features XML
             attributes = product.get("details", {}).get("attributes", {})
@@ -272,7 +274,7 @@ def process_products(json_file):
 
             # Create product
             product_xml = f"""
-            <prestashop>
+            <prestashop>    
               <product>
                 <id_category_default>{category_id}</id_category_default>
                 <price>{format(float(price) * 4.2, '.2f')}</price>
