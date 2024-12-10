@@ -14178,7 +14178,7 @@
         ]
     },
     {
-        "category": "Bracelets",
+        "category": "Accessories/Bracelets",
         "products": [
             {
                 "name": "Silicone bracelet",
@@ -15313,7 +15313,7 @@
         ]
     },
     {
-        "category": "Rings",
+        "category": "Accessories/Rings",
         "products": [
             {
                 "name": "Ring with engraving Stormtrooper",
@@ -15373,10 +15373,6 @@
                 }
             }
         ]
-    },
-    {
-        "category": "Cosmetic bags and wallets",
-        "products": []
     },
     {
         "category": "Pendants/pendants",
@@ -16482,7 +16478,7 @@
         ]
     },
     {
-        "category": "Earrings and tunnels",
+        "category": "Accessories/Earrings and tunnels",
         "products": [
             {
                 "name": "Plugs (tunnels) Darth Vader 6-25 mm",
@@ -17702,14 +17698,6 @@
                 }
             }
         ]
-    },
-    {
-        "category": "Star Wars Flowerpot",
-        "products": []
-    },
-    {
-        "category": "Mouse pads",
-        "products": []
     },
     {
         "category": "Magnets",
@@ -21221,10 +21209,6 @@
         ]
     },
     {
-        "category": "Photo wallpaper",
-        "products": []
-    },
-    {
         "category": "Stationery",
         "products": [
             {
@@ -22034,10 +22018,6 @@
         ]
     },
     {
-        "category": "Gift certificates",
-        "products": []
-    },
-    {
         "category": "Textile",
         "products": [
             {
@@ -22084,34 +22064,6 @@
                 }
             }
         ]
-    },
-    {
-        "category": "Kitchen aprons",
-        "products": []
-    },
-    {
-        "category": "Shoe bags",
-        "products": []
-    },
-    {
-        "category": "Socks",
-        "products": []
-    },
-    {
-        "category": "Pillows",
-        "products": []
-    },
-    {
-        "category": "Bedspreads",
-        "products": []
-    },
-    {
-        "category": "T-shirts",
-        "products": []
-    },
-    {
-        "category": "Robes",
-        "products": []
     },
     {
         "category": "Flash drives",

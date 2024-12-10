@@ -5,7 +5,7 @@ import json
 import re
 
 # Configuration
-API_URL = "http://localhost:8080/api/"
+API_URL = "https://localhost:8443/api/"
 API_KEY = "WMD622FVQ2MP6P412WBNRWQSQRBU71GF"
 JSON_FILE = "../scrapper/scraped_products_1/products_data.json"  # Path to the JSON file
 DEBUG = False  # Set to True to enable debug logging
@@ -28,7 +28,9 @@ def get_or_create_category(category_name, parent_id, first_product_image=None):
     response = requests.get(
         f"{API_URL}categories",
         params={"filter[name]": category_name, "display": "full"},
-        auth=(API_KEY, "")
+        auth=(API_KEY, ""),
+        verify = False,
+        cert=("../ssl/localhost.cert","../ssl/localhost.key")
     )
     response.raise_for_status()
     category_data = response.text
@@ -60,7 +62,9 @@ def get_or_create_category(category_name, parent_id, first_product_image=None):
             f"{API_URL}categories",
             data=category_xml.encode('utf-8'),
             headers={"Content-Type": "application/xml"},
-            auth=(API_KEY, "")
+            auth=(API_KEY, ""),
+            verify = False,
+            cert=("../ssl/localhost.cert","../ssl/localhost.key")
         )
         response.raise_for_status()
         category_data = response.text
@@ -75,7 +79,9 @@ def get_or_create_category(category_name, parent_id, first_product_image=None):
                 response = requests.post(
                     f"{API_URL}images/categories/{category_id}",
                     files=files,
-                    auth=(API_KEY, "")
+                    auth=(API_KEY, ""),
+                    verify = False,
+                    cert=("../ssl/localhost.cert","../ssl/localhost.key")
                 )
                 if "<error>" in response.text:
                     print(f"Failed to upload image for category '{category_name}'")
@@ -109,7 +115,9 @@ def get_or_create_feature(name):
     response = requests.get(
         f"{API_URL}product_features",
         params={"filter[name]": name, "display": "full"},
-        auth=(API_KEY, "")
+        auth=(API_KEY, ""),
+        verify = False,
+        cert=("../ssl/localhost.cert","../ssl/localhost.key")
     )
     response.raise_for_status()
     feature_data = response.text
@@ -132,7 +140,9 @@ def get_or_create_feature(name):
             f"{API_URL}product_features",
             data=feature_xml.encode('utf-8'),
             headers={"Content-Type": "application/xml"},
-            auth=(API_KEY, "")
+            auth=(API_KEY, ""),
+            verify = False,
+            cert=("../ssl/localhost.cert","../ssl/localhost.key")
         )
         response.raise_for_status()
         feature_data = response.text
@@ -150,7 +160,9 @@ def get_feature_value_id(feature_id, value):
     response = requests.get(
         f"{API_URL}product_feature_values",
         params={"filter[id_feature]": feature_id, "filter[value]": value, "display": "full"},
-        auth=(API_KEY, "")
+        auth=(API_KEY, ""),
+        verify = False,
+        cert=("../ssl/localhost.cert","../ssl/localhost.key")
     )
     response.raise_for_status()
     feature_value_data = response.text
@@ -174,7 +186,9 @@ def get_feature_value_id(feature_id, value):
             f"{API_URL}product_feature_values",
             data=feature_value_xml.encode('utf-8'),
             headers={"Content-Type": "application/xml"},
-            auth=(API_KEY, "")
+            auth=(API_KEY, ""),
+            verify = False,
+            cert=("../ssl/localhost.cert","../ssl/localhost.key")
         )
         response.raise_for_status()
         feature_value_data = response.text
@@ -192,7 +206,9 @@ def get_product_count_in_category(category_id):
     response = requests.get(
         f"{API_URL}categories/{category_id}",
         params={"display": "full"},
-        auth=(API_KEY, "")
+        auth=(API_KEY, ""),
+        verify = False,
+        cert=("../ssl/localhost.cert","../ssl/localhost.key")
     )
     response.raise_for_status()
     category_data = response.text
@@ -309,7 +325,9 @@ def process_products(json_file):
                 f"{API_URL}products",
                 data=product_xml.encode('utf-8'),
                 headers={"Content-Type": "application/xml"},
-                auth=(API_KEY, "")
+                auth=(API_KEY, ""),
+                verify = False,
+                cert=("../ssl/localhost.cert","../ssl/localhost.key")
             )
             response.raise_for_status()
             product_data = response.text
@@ -326,7 +344,9 @@ def process_products(json_file):
             # Find the stock ID for the product
             stock_id_response = requests.get(
                 f"{API_URL}stock_availables?filter%5Bid_product%5D={product_id}&display=full",
-                auth=(API_KEY, "")
+                auth=(API_KEY, ""),
+                verify = False,
+                cert=("../ssl/localhost.cert","../ssl/localhost.key")
             )
 
             # Parse the response to extract stock ID
@@ -358,7 +378,9 @@ def process_products(json_file):
                     f"{API_URL}stock_availables/{stock_id}",
                     data=stock_xml.encode('utf-8'),
                     headers={"Content-Type": "application/xml"},
-                    auth=(API_KEY, "")
+                    auth=(API_KEY, ""),
+                    verify = False,
+                    cert=("../ssl/localhost.cert","../ssl/localhost.key")
                 )
                 if "<error>" in response.text:
                     print(f"Failed to update stock for '{name}'. Response: {response.text}")
@@ -377,7 +399,9 @@ def process_products(json_file):
                         response = requests.post(
                             f"{API_URL}images/products/{product_id}",
                             files=files,
-                            auth=(API_KEY, "")
+                            auth=(API_KEY, ""),
+                            verify = False,
+                            cert=("../ssl/localhost.cert","../ssl/localhost.key")
                         )
                     if "<error>" in response.text:
                         print(f"Failed to upload image for '{name}'")
