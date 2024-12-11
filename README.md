@@ -7,9 +7,9 @@ A clone of the [Darth shop](https://darth-shop.ru) built using PrestaShop v1.7.8
 - [Prestashop 1.7.8.11](https://github.com/PrestaShop/PrestaShop/tree/1.7.8.11)
 - `php:7.4`
 - `mariadb:11.5`
-- Python 3
-- Selenium
-- Docker
+- `Python 3`
+- `Selenium`
+- `Docker`
 
 ## How to run
 
