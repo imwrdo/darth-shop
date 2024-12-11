@@ -62,6 +62,7 @@ class CustomerPersisterCore
 
     private function update(Customer $customer, $clearTextPassword, $newPassword, $passwordRequired = true)
     {
+        /*
         if (!$customer->is_guest && $passwordRequired && !$this->crypto->checkHash(
             $clearTextPassword,
             $customer->passwd,
@@ -77,7 +78,7 @@ class CustomerPersisterCore
 
             return false;
         }
-
+        */
         if (!$customer->is_guest) {
             $customer->passwd = $this->crypto->hash(
                 $newPassword ? $newPassword : $clearTextPassword,
