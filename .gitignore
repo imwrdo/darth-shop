@@ -1,0 +1,5 @@
+.DS_Store
+prestashop/var/
+.venv
+rest_api/venv/
+selenium_tests/venv/
