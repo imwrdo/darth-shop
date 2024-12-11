@@ -16,7 +16,7 @@ def test_prestashop():
         driver.get("https://localhost:8443")  # Replace with your local store URL
     
         # Add 10 products to the cart from two categories
-        category_ids = [99, 106]
+        category_ids = [90, 101]
         for category_id in category_ids:
             driver.get(f"https://localhost:8443/index.php?id_category={category_id}&controller=category&id_lang=1")
             time.sleep(2)
@@ -62,6 +62,7 @@ def test_prestashop():
         driver.find_element(By.NAME, "lastname").send_keys("User")
         email = f"testuser{random.randint(1000,9999)}@example.com"
         driver.find_element(By.NAME, "email").send_keys(email)
+        time.sleep(2)
         driver.find_element(By.NAME, "password").send_keys("SecurePassword123")
         
         privacy_checkbox = driver.find_element(By.NAME, "customer_privacy")
@@ -71,7 +72,7 @@ def test_prestashop():
         gdpr_checkbox = driver.find_element(By.NAME, "psgdpr")
         if not gdpr_checkbox.is_selected():
             gdpr_checkbox.click()
-            
+        time.sleep(3)    
         driver.find_element(By.CLASS_NAME, "form-control-submit").click()
         time.sleep(1)
         # Complete the order
@@ -101,14 +102,14 @@ def test_prestashop():
 
         # Check the order status
         time.sleep(1)
-        driver.find_element(By.XPATH,'//a[contains(text(), "Log In")]').click()
+        driver.get("https://localhost:8443/index.php?controller=my-account")
         driver.find_element(By.ID, "history-link").click()
         driver.find_element(By.LINK_TEXT,"Details").click()
         
 
         # Download the invoice
         time.sleep(1)
-        driver.find_element(By.XPATH,'//a[contains(text(), "Log In")]').click()
+        driver.get("https://localhost:8443/index.php?controller=my-account")
         driver.find_element(By.ID, "history-link").click()
         driver.find_element(By.XPATH, "//td[@class='text-sm-center hidden-md-down']/a").click()
         time.sleep(4)
