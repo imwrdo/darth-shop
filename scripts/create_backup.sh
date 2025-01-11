@@ -6,7 +6,6 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-
 # Check if the file exists on the host system
 if [ -f "$1" ]; then
     echo "The file '$1' exists. Do you want to override it? (y/n)"
@@ -16,7 +15,6 @@ if [ -f "$1" ]; then
         exit 1
     fi
 fi
-
-source "./.env"
+source ".env"
 
 docker compose exec mariadb mariadb-dump -u root -p"$DB_PASSWD" --databases "$DB_NAME" > "$1"

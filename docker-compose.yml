@@ -4,8 +4,13 @@ services:
   mariadb:
     container_name: mariadb
     image: mariadb
+    deploy:
+      resources:
+        limits:
+          cpus: "0.875"
+          memory: 1G
     volumes:
-     - ./docker/mariadb:/docker-entrypoint-initdb.d
+      - ./docker/mariadb:/docker-entrypoint-initdb.d
     environment:
       - PS_FOLDER_ADMIN=admin087pqsbei
       - MYSQL_ROOT_PASSWORD=root
@@ -16,9 +21,15 @@ services:
   prestashop:
     container_name: prestashop
     build: .
+    deploy:
+      resources:
+        limits:
+          cpus: "0.4"
+          memory: 512m
     restart: unless-stopped
     depends_on:
       - mariadb
+      - memcached-server
     ports:
       - 8080:80
       - 8443:443
@@ -34,12 +45,19 @@ services:
       - PS_INSTALL_AUTO=1
       - PS_DOMAIN=https://localhost:8443
       - PS_FOLDER_ADMIN=admin087pqsbei
+      - MEMCACHED_HOST=memcached-server
+      - MEMCACHED_PORT=11211
     networks:
       - prestashop
 
   phpmyadmin:
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 256m
     links:
       - mariadb
     ports: 
@@ -48,6 +66,18 @@ services:
       - PMA_HOST=mariadb
       - PMA_USER=root
       - PMA_PASSWORD=root
+
+  memcached-server:
+    container_name: memcached-server
+    image: memcached
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512m
+    networks:
+      - prestashop
+
 networks:
     prestashop:
 
