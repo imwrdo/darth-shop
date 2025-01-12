@@ -24,8 +24,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.4"
-          memory: 512m
+          cpus: "0.75"
+          memory: 1G
     restart: unless-stopped
     depends_on:
       - mariadb
@@ -56,8 +56,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.25"
-          memory: 256m
+          cpus: "0.5"
+          memory: 512m
     links:
       - mariadb
     ports: 
@@ -73,8 +73,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
-          memory: 512m
+          cpus: "0.75"
+          memory: 1G
     networks:
       - prestashop
 

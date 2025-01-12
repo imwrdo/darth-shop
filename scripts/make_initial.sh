@@ -13,7 +13,7 @@ if [ ! -f "$1" ]; then
 fi
 
 echo "Making $1 an initializing backup"
-cp $1 docker/mariadb/final_backup.sh
+cp $1 docker/mariadb/final_backup.sql
 
 
 # Check if the file was copied successfully
