@@ -4,11 +4,11 @@ services:
   mariadb:
     container_name: mariadb
     image: mariadb
-    #deploy:
-      #resources:
-        #limits:
-          #cpus: "0.875"
-          #memory: 1G
+    deploy:
+      resources:
+        limits:
+          cpus: "0.875"
+          memory: 1G
     volumes:
       - ./docker/mariadb:/docker-entrypoint-initdb.d
     environment:
