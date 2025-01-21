@@ -36,4 +36,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: imwrdo/darth-shop:latest
+          tags: darthshop/darth-shop:latest
