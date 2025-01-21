@@ -20,7 +20,7 @@ services:
 
   prestashop:
     container_name: prestashop
-    build: .
+    image: darthshop/darth-shop:latest
     deploy:
       resources:
         limits:
@@ -79,5 +79,4 @@ services:
       - prestashop
 
 networks:
-    prestashop:
-
+  prestashop:
