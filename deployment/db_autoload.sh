@@ -1,5 +1,5 @@
 #!/bin/bash
-# Konfiguracja dla importu bazy danych
+
 DB_HOST="admin-mysql_db"        # Host bazy danych (nazwa kontenera)
 DB_USER="root"                  # Nazwa użytkownika bazy danych
 DB_PASS="student"               # Hasło do bazy danych
