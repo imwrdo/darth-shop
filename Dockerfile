@@ -4,8 +4,6 @@ COPY ./ssl/localhost.key /var/www/prestashop/.ssl/localhost.key
 COPY ./ssl/localhost.cert /var/www/prestashop/.ssl/localhost.cert
 
 COPY ./ssl/default-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
-COPY ./docker/templates/parameters.php  /var/www/html/app/config/parameters.php
-
 
 RUN a2enmod ssl \
     && ln -s /etc/apache2/sites-available/000-default-ssl.conf /etc/apache2/sites-enabled/000-default-ssl.conf \
@@ -17,7 +15,6 @@ RUN a2enmod ssl \
     && echo "HI" \
     && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/20-memcached.ini
 
-    
 EXPOSE 443
 
 CMD ["apache2-foreground"]
