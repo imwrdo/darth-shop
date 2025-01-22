@@ -5,6 +5,8 @@ COPY ./ssl/localhost.cert /var/www/prestashop/.ssl/localhost.cert
 
 COPY ./ssl/default-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
 
+COPY ./docker/template/parameters.php  /var/www/html/app/config/parameters.php
+
 RUN a2enmod ssl \
     && ln -s /etc/apache2/sites-available/000-default-ssl.conf /etc/apache2/sites-enabled/000-default-ssl.conf \
     && apt-get update \
