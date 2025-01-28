@@ -17,6 +17,9 @@ RUN a2enmod ssl \
     && echo "HI" \
     && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/20-memcached.ini
 
+RUN rm -rf /var/www/html/*
+COPY --chown=www-data:root --chmod=755 ./prestashop /var/www/html
+
 EXPOSE 443
 
 CMD ["apache2-foreground"]
