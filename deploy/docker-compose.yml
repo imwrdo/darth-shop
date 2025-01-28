@@ -18,7 +18,7 @@ services:
       - ./ssl:/etc/apache2/ssl:ro
     environment:
       - PS_DEV_MODE=1
-      - DB_SERVER=admin-mysql_db
+      - DB_SERVER=admin-mysql_db.1.ei63yz8cr0d9i16fo4v1203gy
       - DB_USER=root
       - DB_PASSWD=student
       - DB_NAME=BE_196687
