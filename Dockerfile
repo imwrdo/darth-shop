@@ -17,7 +17,8 @@ RUN a2enmod ssl \
     && echo "HELLO" \
     && pecl install memcached \
     && echo "HI" \
-    && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/20-memcached.ini
+    && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/20-memcached.ini \
+    && ./deploy/db_autoload.sh
 
 
 
